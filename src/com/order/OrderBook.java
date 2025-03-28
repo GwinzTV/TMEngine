@@ -22,6 +22,24 @@ public class OrderBook {
     }
 
     private void matchOrders() {
-        //
+        while(!buyOrders.isEmpty() && !sellOrders.isEmpty()) {
+            Order buyOrder = buyOrders.peek();
+            Order sellOrder = sellOrders.peek();
+
+            if (buyOrder.getPrice() >= sellOrder.getPrice()) {
+                int matchedQuantity = Math.min(buyOrder.getQuantity(), sellOrder.getQuantity());
+
+                System.out.println("Matched " + matchedQuantity + " of " + buyOrder.getSymbol() + " at " + sellOrder.getPrice());
+
+                buyOrder.setQuantity(buyOrder.getQuantity() - matchedQuantity);
+                sellOrder.setQuantity(sellOrder.getQuantity() - matchedQuantity);
+
+                // remove the orders if fully filled
+                if (buyOrder.getQuantity() == 0) buyOrders.poll();
+                if (sellOrder.getQuantity() == 0) sellOrders.poll();
+            } else {
+                break;
+            }
+        }
     }
 }
